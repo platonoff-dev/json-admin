@@ -3,11 +3,33 @@
     "fields": [
         {
             "name": "First field",
-            "type": "text"
+            "type": "text",
+            "default": "some value"
         },
         {
             "name": "Second field",
             "type": "text"
+        },
+        {
+            "name": "Read only",
+            "type": "text",
+            "read_only": true,
+            "default": "123"
+        },
+        {
+            "name": "Chose",
+            "type": "text",
+            "list": ["1", "2", "3", "Inf"]
+        },
+        {
+            "name": "Disabled",
+            "type": "phone",
+            "disabled": true
+        },
+        {
+            "name": "Email",
+            "type": "email",
+            "required": true
         }
     ]
 }

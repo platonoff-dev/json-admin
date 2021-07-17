@@ -2,6 +2,7 @@ from flask import Flask
 import json
 
 import schema
+import views
 
 
 def welcome_view() -> str:
@@ -15,10 +16,11 @@ def read_schema() -> dict:
 def main() -> None:
     app = Flask(__name__)
 
-    settins = read_schema()
-    schema.validate(settins)
+    s = schema.Schema(read_schema())
 
-    app.add_url_rule("/create", view_func=schema.generate_create_view(settins))
+    app.add_url_rule("/create/", view_func=views.create_view(s))
+
+    app.add_url_rule("/item/", view_func=views.create_item, methods=["POST"])
 
     app.run(port=8088)
 

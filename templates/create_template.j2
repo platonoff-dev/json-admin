@@ -3,11 +3,65 @@
 {% endblock %}
 
 {% block content %}
-  <form method="post">
+  <form method="post" action="/item/">
     {% for field in schema.fields %}
-      <label for="{{field["name"]}}"> {{ field["name"] }} </label>
-      <input name={{field["name"]}}" type="{{field["type"]}}">
+      <label for="{{ field.name }}"> {{ field.name }} </label>
+      <input 
+        name={{ field.name }}" 
+        type="{{ field.type }}" 
+        
+        {% if field.default %}
+          value="{{ field.default }}"
+        {% endif %}
+
+        {% if field.read_only %}
+          readonly
+        {% endif %}
+
+        {% if field.disabled %}
+          disabled
+        {% endif %}
+
+        {% if field.max_lenth %}
+          maxlength="{{ field.max_legth }}"
+        {% endif %}
+
+        {% if field.min %}
+          min="{{ field.min }}"
+        {% endif %}
+
+        {% if field.max %}
+          max="{{ field.max }}"
+        {% endif %}
+
+        {% if field.multiple %}
+          multiple
+        {% endif %}
+
+        {% if field.pattern %}
+          pattern="{{ field.pattern }}"
+        {% endif %}
+
+        {% if field.placeholder %}
+          placeholder="{{ field.placeholder }}"
+        {% endif %}
+
+        {% if field.required %}
+          required
+        {% endif %}
+
+        {% if field.list %}
+          list="{{ field.name }}"
+        {% endif %}
+      >
+      {% if field.list %}
+        <datalist id="{{ field.name }}">
+          {% for item in field.list %}
+            <option value="{{ item }}">
+          {% endfor %}
+        </datalist>
+      {% endif %}
     {% endfor %}
-    <input type="submit" value="Cretae">
+    <input type="submit" value="Create">
   </form>
 {% endblock %}

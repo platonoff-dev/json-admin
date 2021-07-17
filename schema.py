@@ -1,4 +1,5 @@
-from typing import List
+from typing import Any, List
+from dataclasses import dataclass
 
 import flask
 
@@ -9,74 +10,68 @@ class ValidationError(Exception):
         self.message = message
 
 
-def _validate_field(field: dict, field_idx: int):
-    if not isinstance(field, dict):
-        raise ValidationError(f"Field {field_idx} is not dict")
-
-    allowed_types = ["text"]
-    required_fields = {
-        "name": str,
-        "type": str
-    }
-
-    for name, t in required_fields.items():
-        if name not in field:
-            raise ValidationError(f"`{name}` not found in field {field_idx}")
-        if not isinstance(field[name], t):
-            raise ValidationError(f"`{name}` has invalid type. Must be {t}, has {type(field[name])}. Field: {field_idx}")
-    
-    if field[name] not in allowed_types:
-        raise ValidationError(f"Field type not allowed. Field: {field_idx}")
-        
-    
-
-
-def validate(schema: dict) -> None:
-    if "fields" not in schema:
-        raise ValidationError("`field` field not found in schema declaration")
-    
-    if "meta" not in schema:
-        raise ValidationError("`meta` field not found in schema declaration")
-
-    fields = schema["fields"]
-    if not isinstance(fields, list) :
-        raise ValidationError("`fields` must be list of dicts")
-    if len(fields) == 0:
-        raise ValidationError("`fields` must be not empty")
-
-    meta = schema["meta"]
-    if not isinstance(meta, dict):
-        raise ValidationError("`meta` must be a dict")
-    
-    for i, field in enumerate(fields):
-        _validate_field(field, i)
-
-
-def generate_create_view(schema: dict):
-    def view():
-        return flask.render_template("create_template.j2", schema=schema)
-
-    return view
-
-def generate_update_view(schema: dict):
-    pass
-
-def generate_list_view(schema: dict):
-    pass
-
-
-class Field:
+class Field:    
     name: str
-    field_type: str
+    type: str
+    default: Any
+    read_only: bool
+    disabled: bool
+    max_length: int
+    min: Any
+    max: Any
+    multiple: bool
+    pattern: str
+    placeholder: str
+    required: bool
+    list: List[str]
 
+    def __init__(self, field: dict) -> None:
+        if "name" not in field:
+            raise ValidationError("`name` required for field")
+        self.name = field["name"]
+        self.type = field.get("type", "text")
+        self.default = field.get("default", None)
+        self.read_only = field.get("read_only", False)
+        self.disabled = field.get("disabled", False)
+
+        self.max_length = field.get("max_length", None)
+        self.min = field.get("min", None)
+        self.max = field.get("max", None)
+        self.multiple = field.get("multiple", False)
+        self.pattern = field.get("pattern", None)
+        self.placeholder = field.get("placeholder", None)
+        self.required = field.get("required", False)
+        self.list = field.get("list", None)
+    
 
 class Meta:
-    pass
+    allow_delete: bool
+    allow_update: bool
+    list_fields: List[str]
+
+    def __init__(self, meta: dict) -> None:
+        self.allow_delete = meta.get("allow_delete")
+        self.allow_update = meta.get("allow_update")
+        self.list_fields = meta.get("list_fields")
 
 
 class Schema:
-    _meta: Meta
-    _fields: List[Field]
+    meta: Meta
+    fields: List[Field]
 
-    def __init__(self) -> None:
-        pass
+    def __init__(self, schema: dict) -> None:
+        if "fields" not in schema:
+            raise ValidationError("`field` field not found in schema declaration")
+    
+        if "meta" not in schema:
+            raise ValidationError("`meta` field not found in schema declaration")
+        
+        fields = schema["fields"]
+        if not isinstance(fields, list) :
+            raise ValidationError("`fields` must be list of dicts")
+        if len(fields) == 0:
+            raise ValidationError("`fields` must be not empty")
+
+
+        self.meta = Meta(schema["meta"])
+        self.fields = [Field(f) for f in schema["fields"]]
