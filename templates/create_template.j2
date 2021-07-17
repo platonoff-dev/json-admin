@@ -1,0 +1,13 @@
+{% block head %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    {% for field in schema.fields %}
+      <label for="{{field["name"]}}"> {{ field["name"] }} </label>
+      <input name={{field["name"]}}" type="{{field["type"]}}">
+    {% endfor %}
+    <input type="submit" value="Cretae">
+  </form>
+{% endblock %}

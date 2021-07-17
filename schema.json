@@ -1,0 +1,13 @@
+{
+    "meta": {},
+    "fields": [
+        {
+            "name": "First field",
+            "type": "text"
+        },
+        {
+            "name": "Second field",
+            "type": "text"
+        }
+    ]
+}
