@@ -3,6 +3,7 @@
 {% endblock %}
 
 {% block content %}
+  <div>{{ item }}</div>
   <form method="post" action="/item/">
     {% for field in schema.fields %}
       <label for="{{ field.name }}"> {{ field.name }} </label>
@@ -13,6 +14,11 @@
         {% if field.default %}
           value="{{ field.default }}"
         {% endif %}
+
+        {% if item.get(field.name) %}
+          value="{{ item.get(field.name) }}"
+        {% endif %}
+        field_name={{field.name}}
 
         {% if field.read_only %}
           readonly

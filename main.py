@@ -18,6 +18,7 @@ def main() -> None:
     app = Flask(__name__)
 
     s = schema.Schema(read_schema())
+
     app.add_url_rule("/create/", view_func=views.create_view(s))
     app.add_url_rule("/list/", view_func=views.list_view(s))
     app.add_url_rule("/delete/<item_id>/", view_func=views.delete_view)

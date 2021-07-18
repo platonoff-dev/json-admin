@@ -67,7 +67,13 @@ def list_view(s: schema.Schema):
 
 def update_view(s: schema.Schema):
     def view2(item_id: str) -> str:
-        pass
+        db: pymongo.MongoClient = get_db()
+        items_collection = db["json-admin"]["items"]
+        item = items_collection.find({"_id": bson.ObjectId(item_id)})[0]
+        return flask.render_template("create_template.j2", schema=s, item=item)
+
+
+
     return view2
 
 def delete_view(item_id: str):

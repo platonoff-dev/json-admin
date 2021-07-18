@@ -28,7 +28,7 @@ class Field:
     def __init__(self, field: dict) -> None:
         if "name" not in field:
             raise ValidationError("`name` required for field")
-        self.name = field["name"]
+        self.name = field["name"].replace(" ", "_").lower()
         self.type = field.get("type", "text")
         self.default = field.get("default", None)
         self.read_only = field.get("read_only", False)
