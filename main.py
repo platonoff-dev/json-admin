@@ -20,6 +20,9 @@ def main() -> None:
     s = schema.Schema(read_schema())
     app.add_url_rule("/create/", view_func=views.create_view(s))
     app.add_url_rule("/list/", view_func=views.list_view(s))
+    app.add_url_rule("/delete/<item_id>/", view_func=views.delete_view)
+    app.add_url_rule("/update/<item_id>/", view_func=views.update_view(s))
+
     app.add_url_rule("/item/", view_func=views.create_item, methods=["POST"])
 
     app.run(port=8088)

@@ -2,6 +2,7 @@ from typing import List
 import flask
 from flask.templating import render_template
 import pymongo
+import bson
 
 import schema
 
@@ -49,15 +50,32 @@ def list_view(s: schema.Schema):
         items_collection = db["json-admin"]["items"]
         items = list(items_collection.find())
 
-        render_fields = s.meta.list_fields
-        if not render_fields:
-            render_fields = get_render_fields(items)
+        render_fields = ["_id"]
+        if not s.meta.list_fields:
+            f = get_render_fields(items)
+            f.remove("_id")
+            render_fields += f
+        else:
+            render_fields += s.meta.list_fields
+
 
         items = [x.values() for x in prepare_items(items, render_fields)]
 
         return render_template("list_template.j2", items=items, headers=render_fields)
 
     return view1
+
+def update_view(s: schema.Schema):
+    def view2(item_id: str) -> str:
+        pass
+    return view2
+
+def delete_view(item_id: str):
+    db: pymongo.MongoClient = get_db()
+    items_collection = db["json-admin"]["items"]
+    items_collection.delete_one({"_id": bson.ObjectId(item_id)})
+    return flask.redirect("/list/")
+
 
 
 def create_item():
