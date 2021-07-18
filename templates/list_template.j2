@@ -1,0 +1,30 @@
+{% block head %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+{% endblock %}
+
+{% block content %}
+    <form method="get" action="/create/">
+        <button type="submit">Create item</button>
+    </form>
+
+    <table>
+        <tr>
+        {% for header in headers %}
+            <th>{{ header }}</th>
+        {% endfor %}
+        <th>Actions</th>
+        </tr>
+
+        {% for row in items %}
+            <tr>
+            {% for value in row %}
+                <td>{{ value }}</td>
+            {% endfor %}
+            <td>
+                <a href="/update/{{ row | first }}/">Update</a>
+                <a href="/delete/{{ row | first }}">Delete</a>
+            </td>
+            </tr>
+        {% endfor %}
+    </table>
+{%endblock %}
