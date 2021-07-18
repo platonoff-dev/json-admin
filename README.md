@@ -3,14 +3,14 @@ Json based for generator
 
 
 ### Json format
-```json
+```
 {
-    meta: {
+    "meta": {
         "list_fields": ["field_1", "field_2", "field_2"],
         "allow_delete": true,
         "allow_update": true,
     }
-    fields: [
+    "fields": [
         {
             "name": "field_name", // Name of field
             "type": "field_type", // Field type like in forms input 
